@@ -428,7 +428,9 @@ describe('API Success Scenarios', function() {
             const response = await axios.post(
                 config.apiEndpoint,
                 testCase.request,
-                { headers: { 'Content-Type': 'application/json' } }
+                { headers: { 'Content-Type': 'application/json',
+                                 'x-api-key': config.apiKey // add x-api-key
+                    } }
             );
             expect(response.status).to.equal(200);
             addContext(this, { title: 'Request Data', value: testCase.request });
@@ -449,7 +451,9 @@ describe('API Error Scenarios', function() {
                 const response = await axios.post(
                     config.apiEndpoint,
                     testCase.request,
-                    { headers: { 'Content-Type': 'application/json' } }
+                    { headers: { 'Content-Type': 'application/json',
+                                 'x-api-key': config.apiKey // add x-api-key
+                    } }
                 );
                 // This should not be called since we expect an error response
                 throw new Error("Expected error response, but got success response.");

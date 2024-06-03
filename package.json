@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:dev": "cross-env NODE_ENV=dev npx mocha tests/testCases.js --reporter mochawesome --reporter-options enableCode=false --timeout 30000",
-    "test:uat": "cross-envNODE_ENV=uat npx mocha tests/testCases.js --reporter mochawesome --reporter-options enableCode=false --timeout 30000",
+    "test:uat": "cross-env NODE_ENV=uat npx mocha tests/testCases.js --reporter mochawesome --reporter-options enableCode=false --timeout 30000",
     "test:prod": "cross-env NODE_ENV=prod npx mocha tests/testCases.js --reporter mochawesome --reporter-options enableCode=false --timeout 30000",
     "test": "npm run test:dev"
   },
