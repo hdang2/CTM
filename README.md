@@ -44,10 +44,13 @@ To run the tests and generate a report, follow these steps:
 
 ## Project Structure
 
-- `tests/testCases.js`: Contains the test cases for the API error scenarios.
-- `package.json`: Lists the project dependencies and scripts.
-- `config.js`: List the API endpoint env
-- `README.md`: Provides information about setting up and running the project.
+project-root/
+│
+├── tests/
+│   └── testCases.js       # Contains the test cases for the API scenarios
+├── config.js              # Config API endpoint
+├── package.json           # List dependencies and scripts
+├── README.md              # Information about setting up and running the project
 
 ## Adding New Test Cases
 

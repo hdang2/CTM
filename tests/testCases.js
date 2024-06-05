@@ -4,6 +4,9 @@ const { expect } = require('chai');
 const addContext = require('mochawesome/addContext');
 const config = require('../config');
 
+// Define acceptable response time in milliseconds
+const ACCEPTABLE_RESPONSE_TIME = 11000; // 11 seconds
+
 // Define test cases array
 let testCases = [];
 
@@ -425,6 +428,7 @@ describe('API Success Scenarios', function() {
     const successTestCases = testCases.filter(testCase => testCase.expectedStatusCode === 200);
     successTestCases.forEach(testCase => {
         it(`${testCase.description} - Expected Status: ${testCase.expectedStatusCode}`, async function() {
+            const startTime = Date.now();
             const response = await axios.post(
                 config.apiEndpoint,
                 testCase.request,
@@ -432,12 +436,16 @@ describe('API Success Scenarios', function() {
                                  'x-api-key': config.apiKey // add x-api-key
                     } }
             );
+            const responseTime = Date.now() - startTime;
             expect(response.status).to.equal(200);
+            expect(responseTime).to.be.lessThan(ACCEPTABLE_RESPONSE_TIME);
             addContext(this, { title: 'Request Data', value: testCase.request });
             addContext(this, { title: 'Response Data', value: response.data });
+            addContext(this, { title: 'Response Time', value: `${responseTime} ms` });
             // Log request and response data
             console.log("Request Data:", JSON.stringify(testCase.request, null, 2));
             console.log("Response Data:", JSON.stringify(response.data, null, 2));
+            console.log(`Response Time: ${responseTime} ms`);
         });
     });
 });
