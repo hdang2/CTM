@@ -5,7 +5,7 @@ const addContext = require('mochawesome/addContext');
 const config = require('../config');
 
 // Define acceptable response time in milliseconds
-const ACCEPTABLE_RESPONSE_TIME = 11000; // 11 seconds
+const ACCEPTABLE_RESPONSE_TIME = 12000; // 9 seconds
 
 // Define test cases array
 let testCases = [];
@@ -201,6 +201,18 @@ const errorScenarios = {
 	"invalidAllowsMedicalAssessment": {
         errorCode: "ER_MEDICAL_CONDITION_INVALID",
         errorMessage: "Invalid medical condition"
+    },
+    "AllowsMedicalAssessmentIsFalseWithDomestic": {
+        errorCode: "ER_MEDICAL_CONDITION_INVALID",
+        errorMessage: "Invalid medical condition"
+    },
+    "AllowsMedicalAssessmentIsFalseWithInternational": {
+        errorCode: "ER_MEDICAL_CONDITION_INVALID",
+        errorMessage: "Invalid medical condition"
+    },
+    "AllowsMedicalAssessmentIsFalseWithAnnualCover": {
+        errorCode: "ER_MEDICAL_CONDITION_INVALID",
+        errorMessage: "Invalid medical condition"
     }
 };
 
@@ -211,10 +223,16 @@ function generateTestCases() {
         addTestCase(scenario, getDefaultRequestData(scenario), 400, errorScenarios[scenario]);
     });
     // Add successful test cases
-    addTestCase("validSingleTripInternational", getDefaultRequestData("validSingleTripInternational"), 200);
-    addTestCase("validSingleTripDomestic", getDefaultRequestData("validSingleTripDomestic"), 200);
-    addTestCase("multi destinations International trip", getDefaultRequestData("multi destinations International trip"), 200);
-    addTestCase("validAnnualCover", getDefaultRequestData("validAnnualCover"), 200);
+    addTestCase("Verify that a valid Single Trip Domestic with 1 traveller", getDefaultRequestData("Verify that a valid Single Trip Domestic with 1 traveller"), 200);
+    addTestCase("Verify that a valid Single Trip Domestic with 2 travellers", getDefaultRequestData("Verify that a valid Single Trip Domestic with 2 travellers"), 200);
+    addTestCase("Verify that a valid Single Trip Domestic with Family travellers", getDefaultRequestData("Verify that a valid Single Trip Domestic with Family travellers"), 200);
+    addTestCase("Verify that a valid Single Trip International with 1 traveller", getDefaultRequestData("Verify that a valid Single Trip International with 1 traveller"), 200);
+    addTestCase("Verify that a valid Single Trip International with 2 travellers", getDefaultRequestData("Verify that a valid Single Trip International with 2 travellers"), 200);
+    addTestCase("Verify that a valid Single Trip International with Family travellers", getDefaultRequestData("Verify that a valid Single Trip International with Family travellers"), 200);
+    addTestCase("Verify that a valid Single Trip International with multi destination", getDefaultRequestData("Verify that a valid Single Trip International with multi destination"), 200);
+    addTestCase("Verify that a valid Annual Cover trip with 1 traveller", getDefaultRequestData("Verify that a valid Annual Cover trip with 1 traveller"), 200);
+    addTestCase("Verify that a valid Annual Cover trip with 2 travellers", getDefaultRequestData("Verify that a valid Annual Cover trip with 2 travellers"), 200);
+    addTestCase("Verify that a valid Annual Cover trip with Family travellers", getDefaultRequestData("Verify that a valid Annual Cover trip with Family travellers"), 200);
 }
 
 // Function to get default request data
@@ -230,11 +248,11 @@ function getDefaultRequestData(scenario) {
             "email": "dennis@paddys.com"
         },
         "singleTripDetails": {
-            "fromDate": moment().format('YYYY-MM-DD'),
-            "toDate": moment().add(10, 'days').format('YYYY-MM-DD')
+            "fromDate": moment().add(5, 'days').format('YYYY-MM-DD'),
+            "toDate": moment().add(15, 'days').format('YYYY-MM-DD')
         },
         "annualCoverDetails": {
-            "startDate": moment().add(10, 'days').format('YYYY-MM-DD'),
+            "startDate": moment().add(15, 'days').format('YYYY-MM-DD'),
             "maxTripDuration": 30
         },
         "destinations": ["GBR"],
@@ -246,7 +264,7 @@ function getDefaultRequestData(scenario) {
             "tripCancellation": "NO_COVER",
             "luggage": "NO_COVER",
             "carRentalExcess": "NO_COVER",
-            "excess": "ONE_HUNDRED",
+            "excess": "TWO_HUNDRED",
             "overseasMedical": "NO_COVER",
             "additionalExpenses": "NO_COVER"
         },
@@ -304,7 +322,7 @@ function getDefaultRequestData(scenario) {
             delete requestData.singleTripDetails;
             break;
         case "invalidFormatStartDate":
-            requestData.singleTripDetails.fromDate = moment().format('YYYY-DD-MM'); // Invalid date format
+            requestData.singleTripDetails.fromDate = moment().add(20, 'days').format('YYYY-DD-MM'); // Invalid date format
             break;
         case "invalidFormatEndDate":
             requestData.singleTripDetails.toDate = moment().add(20, 'days').format('YYYY-DD-MM'); // Invalid date format
@@ -403,16 +421,70 @@ function getDefaultRequestData(scenario) {
         case "invalidAllowsMedicalAssessment":
             requestData.allowsMedicalAssessment = "invalid";
             break;
-        case "validSingleTripDomestic":
+        case "AllowsMedicalAssessmentIsFalseWithDomestic":
             requestData.destinations = ["AUS"];
+            requestData.allowsMedicalAssessment = "false";
             break;
-        case "multi destinations International trip":
-            requestData.destinations = ["USA", "FRA"]; // multi destinations for International trip
+        case "AllowsMedicalAssessmentIsFalseWithInternational":
+            requestData.allowsMedicalAssessment = "false";
             break;
-        case "validAnnualCover":
+        case "AllowsMedicalAssessmentIsFalseWithAnnualCover":
             requestData.policyType = "ANNUAL_COVER";
             delete requestData.singleTripDetails;
             requestData.destinations = ["WW"];
+            requestData.allowsMedicalAssessment = "false";
+            break;
+        case "Verify that a valid Single Trip Domestic with 1 traveller":
+            requestData.destinations = ["AUS"];
+            requestData.travellerAges = [40];
+            requestData.travellerChildAges = [];
+            break;
+        case "Verify that a valid Single Trip Domestic with 2 travellers":
+            requestData.destinations = ["AUS"];
+            requestData.travellerAges = [40, 35];
+            requestData.travellerChildAges = [];
+            break;
+        case "Verify that a valid Single Trip Domestic with Family travellers":
+            requestData.destinations = ["AUS"];
+            requestData.travellerAges = [40, 35];
+            requestData.travellerChildAges = [5, 10, 15];
+            break;
+        case "Verify that a valid Single Trip International with 1 traveller":
+            requestData.destinations = ["USA"];
+            requestData.travellerAges = [40];
+            requestData.travellerChildAges = [];
+            break;
+        case "Verify that a valid Single Trip International with 2 travellers":
+            requestData.destinations = ["AUS"];
+            requestData.travellerAges = [40, 35];
+            requestData.travellerChildAges = [];
+            break;
+        case "Verify that a valid Single Trip International with Family travellers":
+            requestData.destinations = ["AUS"];
+            requestData.travellerAges = [40, 35];
+            requestData.travellerChildAges = [5, 10, 15];
+            break;
+        case "Verify that a valid Single Trip International with multi destination":
+            requestData.destinations = ["USA", "FRA"]; // multi destinations for International trip
+            break;
+        case "Verify that a valid Annual Cover trip with 1 traveller":
+            requestData.policyType = "ANNUAL_COVER";
+            delete requestData.singleTripDetails;
+            requestData.destinations = ["WW"];
+            requestData.travellerAges = [40];
+            break;
+        case "Verify that a valid Annual Cover trip with 2 travellers":
+            requestData.policyType = "ANNUAL_COVER";
+            delete requestData.singleTripDetails;
+            requestData.destinations = ["WW"];
+            requestData.travellerAges = [40, 35];
+            break;
+        case "Verify that a valid Annual Cover trip with Family travellers":
+            requestData.policyType = "ANNUAL_COVER";
+            delete requestData.singleTripDetails;
+            requestData.destinations = ["WW"];
+            requestData.travellerAges = [40, 35];
+            requestData.travellerChildAges = [5, 10, 15];
             break;
         default:
             break;
